@@ -1,3 +1,4 @@
+import { Entypo } from "@expo/vector-icons";
 import { Alert, Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { theme } from "../theme";
 
@@ -34,12 +35,15 @@ export function ShoppingListItem({ name, isCompleted = false }: Props) {
     );
   };
   return (
-    <View style={styles.container}>
-      <Text
-        style={[styles.text, isCompleted ? stylesCompleted.text : undefined]}
-      >
-        {name}
-      </Text>
+    <View style={[styles.container, styles.row]}>
+      <View style={[styles.row]}>
+        <Entypo name={isCompleted ? "check" : "circle"} style={[styles.icon]} />
+        <Text
+          style={[styles.text, isCompleted ? stylesCompleted.text : undefined]}
+        >
+          {name}
+        </Text>
+      </View>
       <TouchableOpacity
         style={[
           styles.button,
@@ -76,13 +80,15 @@ const stylesCompleted = StyleSheet.create({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: theme.colorCerulean,
-    alignItems: "center",
     justifyContent: "space-between",
+  },
+  row: {
     flexDirection: "row",
+    alignItems: "center",
   },
   button: {
     padding: 8,
@@ -101,5 +107,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 300,
     color: "#0f0511",
+    marginLeft: 16,
+  },
+  icon: {
+    fontSize: 24,
+    fontWeight: 300,
   },
 });

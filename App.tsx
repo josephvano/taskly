@@ -1,13 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { ShoppingListItem } from "./components/ShoppingListItem";
+import { theme } from "./theme";
 
 export default function App() {
   return (
     <View style={styles.container}>
       <ShoppingListItem name="Coffee" isCompleted />
       <ShoppingListItem name="Sugar" />
-      <ShoppingListItem name="Tea" />
+      <ShoppingListItem name="Tea" isCompleted />
+      <ShoppingListItem name="Milk" />
       <StatusBar style="auto" />
     </View>
   );
@@ -16,9 +18,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: theme.color.white,
     justifyContent: "center",
-    paddingHorizontal: 36,
-    paddingVertical: 48,
   },
 });
