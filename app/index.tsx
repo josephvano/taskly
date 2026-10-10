@@ -1,12 +1,9 @@
-import { Link, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ShoppingListItem } from "../components/ShoppingListItem";
 import { theme } from "../theme";
 
 export default function Index() {
-  const router = useRouter();
-
   return (
     <View style={styles.container}>
       <ShoppingListItem name="Coffee" isCompleted />
