@@ -3,6 +3,14 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { theme } from "./theme";
 
 export default function App() {
+  const onCancel = () => {
+    console.log("Cancel");
+  };
+
+  const onYes = () => {
+    console.log("Yes");
+  };
+
   const handleAlert = () => {
     Alert.alert(
       "Are you sure you want to delete this",
@@ -11,10 +19,12 @@ export default function App() {
         {
           text: "Yes",
           style: "default",
+          onPress: onYes,
         },
         {
           text: "Cancel",
           style: "cancel",
+          onPress: onCancel,
         },
       ],
     );
