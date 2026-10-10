@@ -1,4 +1,4 @@
-import { Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 import { Alert, Text, StyleSheet, TouchableOpacity, View } from "react-native";
 import { theme } from "../theme";
 
@@ -44,21 +44,12 @@ export function ShoppingListItem({ name, isCompleted = false }: Props) {
           {name}
         </Text>
       </View>
-      <TouchableOpacity
-        style={[
-          styles.button,
-          isCompleted ? stylesCompleted.button : undefined,
-        ]}
-        onPress={handleAlert}
-      >
-        <Text
-          style={[
-            styles.buttonText,
-            isCompleted ? stylesCompleted.buttonText : undefined,
-          ]}
-        >
-          Delete
-        </Text>
+      <TouchableOpacity hitSlop={20} onPress={handleAlert}>
+        <AntDesign
+          name="close-circle"
+          color={isCompleted ? theme.colorGrey : theme.color.red}
+          size={24}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -67,9 +58,6 @@ export function ShoppingListItem({ name, isCompleted = false }: Props) {
 const stylesCompleted = StyleSheet.create({
   buttonText: {
     color: theme.colorLightGrey,
-  },
-  button: {
-    backgroundColor: theme.colorGrey,
   },
   text: {
     textDecorationLine: "line-through",
@@ -80,7 +68,7 @@ const stylesCompleted = StyleSheet.create({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: theme.colorCerulean,
@@ -93,7 +81,6 @@ const styles = StyleSheet.create({
   button: {
     padding: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#000",
     borderRadius: 8,
   },
   buttonText: {

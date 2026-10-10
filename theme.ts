@@ -5,5 +5,6 @@ export const theme = {
   colorLightGrey: "#eee",
   color: {
     white: "#fff",
+    red: "#f31515",
   },
 };
