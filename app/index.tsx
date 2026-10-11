@@ -1,36 +1,56 @@
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, TextInput, View, FlatList } from "react-native";
 import { EmptyList } from "../components/EmptyList";
 import { ShoppingListItem } from "../components/ShoppingListItem";
-import { Item, orderShoppingList } from "../lib";
+import { getDataFromStorage, Item, orderShoppingList, storeData } from "../lib";
 import { theme } from "../theme";
+
+const STORAGE_KEY = "shoppingList";
 
 export default function Index() {
   const [value, setValue] = useState<string>("");
 
   const [items, setItems] = useState<Item[]>([]);
 
-  const handleSubmit = () => {
+  // Load data from storage
+  useEffect(() => {
+    const loadData = async () => {
+      const data = await getDataFromStorage(STORAGE_KEY);
+      if (data) {
+        setItems(data);
+      }
+    };
+    loadData();
+  }, []);
+
+  const handleSubmit = async () => {
     if (!value) return;
 
-    setItems([
+    const newList = [
       {
         id: new Date().toISOString(),
         name: value,
         lastUpdatedTimestamp: Date.now(),
       },
       ...items,
-    ]);
+    ];
+
+    setItems(newList);
 
     setValue("");
+
+    await storeData(STORAGE_KEY, newList);
   };
 
-  const handleDelete = (id: string) => {
-    setItems(items.filter((item) => item.id !== id));
+  const handleDelete = async (id: string) => {
+    const newList = items.filter((item) => item.id !== id);
+    setItems(newList);
+
+    await storeData(STORAGE_KEY, newList);
   };
 
-  const handleToggle = (id: string) => {
+  const handleToggle = async (id: string) => {
     const shopping = items.map((item) => {
       const now = Date.now();
       if (item.id === id) {
@@ -45,6 +65,7 @@ export default function Index() {
     });
 
     setItems(shopping);
+    await storeData(STORAGE_KEY, shopping);
   };
 
   return (
