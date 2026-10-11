@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { StyleSheet, TextInput, View, ScrollView } from "react-native";
+import { StyleSheet, TextInput, View, FlatList } from "react-native";
+import { EmptyList } from "../components/EmptyList";
 import { ShoppingListItem } from "../components/ShoppingListItem";
 import { theme } from "../theme";
 
@@ -13,18 +14,7 @@ type Item = {
 export default function Index() {
   const [value, setValue] = useState<string>("");
 
-  const [items, setItems] = useState<Item[]>([
-    {
-      id: "1",
-      name: "Milk",
-      isCompleted: false,
-    },
-    {
-      id: "2",
-      name: "Butter",
-      isCompleted: false,
-    },
-  ]);
+  const [items, setItems] = useState<Item[]>([]);
 
   const handleSubmit = () => {
     if (!value) return;
@@ -42,30 +32,30 @@ export default function Index() {
   };
 
   return (
-    <ScrollView
+    <FlatList
+      data={items}
       style={styles.container}
       contentContainerStyle={styles.scrollContainer}
       stickyHeaderIndices={[0]}
+      ListHeaderComponent={
+        <View style={styles.textContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="e.g. Tacos"
+            returnKeyType="join"
+            value={value}
+            onChangeText={(value: string) => setValue(value)}
+            onSubmitEditing={() => handleSubmit()}
+          />
+        </View>
+      }
+      renderItem={({ item }) => (
+        <ShoppingListItem name={item.name} isCompleted={item.isCompleted} />
+      )}
+      ListEmptyComponent={EmptyList}
     >
-      <View style={styles.textContainer}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="e.g. Tacos"
-          returnKeyType="join"
-          value={value}
-          onChangeText={(value: string) => setValue(value)}
-          onSubmitEditing={() => handleSubmit()}
-        />
-      </View>
-      {items.map((item) => (
-        <ShoppingListItem
-          name={item.name}
-          key={item.id}
-          isCompleted={item.isCompleted}
-        />
-      ))}
       <StatusBar style="auto" />
-    </ScrollView>
+    </FlatList>
   );
 }
 
