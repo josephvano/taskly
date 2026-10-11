@@ -1,13 +1,33 @@
+import { Duration, isBefore, intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { registerPushNotifications } from "../../lib";
 
+const timestampDue = Date.now() + 10000; // 10 seconds from now
+
+type CountdownStatus = {
+  isOverdue: boolean;
+  distance: Duration;
+};
+
 export default function CounterScreen() {
   const [timer, setTimer] = useState(0);
+  const [status, setStatus] = useState<CountdownStatus>({
+    isOverdue: false,
+    distance: intervalToDuration({ start: 0, end: 0 }),
+  });
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTimer((prevTimer) => prevTimer + 1);
+
+      const now = Date.now();
+      const isOverdue = isBefore(timestampDue, now);
+      const distance = isOverdue
+        ? intervalToDuration({ start: timestampDue, end: now })
+        : intervalToDuration({ start: now, end: timestampDue });
+
+      setStatus({ isOverdue, distance });
     }, 1000);
 
     return () => {
@@ -44,6 +64,15 @@ export default function CounterScreen() {
     <View style={styles.container}>
       <View style={styles.containerTimer}>
         <Text style={styles.timerText}>{timer}</Text>
+        <Text
+          style={[
+            styles.timerText,
+            status.isOverdue ? { color: "red" } : { color: "green" },
+          ]}
+        >
+          {status.isOverdue ? "-" : ""}
+          {status.distance.seconds}
+        </Text>
       </View>
       <TouchableOpacity
         onPress={scheduleNotification}
@@ -65,6 +94,9 @@ const styles = StyleSheet.create({
   },
   containerTimer: {
     marginBottom: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 24,
   },
   timerText: {
     fontSize: 48,
