@@ -1,6 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  FlatList,
+  LayoutAnimation,
+} from "react-native";
 import { EmptyList } from "../components/EmptyList";
 import { ShoppingListItem } from "../components/ShoppingListItem";
 import { getDataFromStorage, Item, orderShoppingList, storeData } from "../lib";
@@ -18,6 +24,7 @@ export default function Index() {
     const loadData = async () => {
       const data = await getDataFromStorage(STORAGE_KEY);
       if (data) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setItems(data);
       }
     };
@@ -36,6 +43,7 @@ export default function Index() {
       ...items,
     ];
 
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setItems(newList);
 
     setValue("");
@@ -45,6 +53,7 @@ export default function Index() {
 
   const handleDelete = async (id: string) => {
     const newList = items.filter((item) => item.id !== id);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setItems(newList);
 
     await storeData(STORAGE_KEY, newList);
@@ -64,6 +73,7 @@ export default function Index() {
       }
     });
 
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setItems(shopping);
     await storeData(STORAGE_KEY, shopping);
   };
