@@ -1,16 +1,36 @@
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { registerPushNotifications } from "../../lib";
 
 export default function CounterScreen() {
-  const handleRequestPermission = async () => {
-    const status = await registerPushNotifications();
-    console.log(`Push Notifications permission status: ${status}`);
+  const scheduleNotification = async () => {
+    const result = await registerPushNotifications();
+
+    if (result === "granted") {
+      const Notifications = await import("expo-notifications");
+
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Scheduled Notification",
+          body: "This is a scheduled notification.",
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+          seconds: 5,
+        },
+      });
+    } else {
+      Alert.alert(
+        "Unable to schedule notification",
+        "Push Notifications permission was not granted.",
+      );
+    }
+    console.log(`Push Notifications permission status: ${result}`);
   };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={handleRequestPermission}
+        onPress={scheduleNotification}
         style={styles.button}
         activeOpacity={0.8}
       >
