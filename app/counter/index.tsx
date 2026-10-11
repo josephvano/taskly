@@ -1,7 +1,20 @@
+import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { registerPushNotifications } from "../../lib";
 
 export default function CounterScreen() {
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimer((prevTimer) => prevTimer + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
   const scheduleNotification = async () => {
     const result = await registerPushNotifications();
 
@@ -29,6 +42,9 @@ export default function CounterScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.containerTimer}>
+        <Text style={styles.timerText}>{timer}</Text>
+      </View>
       <TouchableOpacity
         onPress={scheduleNotification}
         style={styles.button}
@@ -46,6 +62,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
+  },
+  containerTimer: {
+    marginBottom: 20,
+  },
+  timerText: {
+    fontSize: 48,
+    fontWeight: "bold",
   },
   text: {
     fontSize: 24,
