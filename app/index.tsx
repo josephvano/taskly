@@ -7,6 +7,7 @@ import {
   FlatList,
   LayoutAnimation,
 } from "react-native";
+import * as Haptics from "expo-haptics";
 import { EmptyList } from "../components/EmptyList";
 import { ShoppingListItem } from "../components/ShoppingListItem";
 import { getDataFromStorage, Item, orderShoppingList, storeData } from "../lib";
@@ -54,6 +55,9 @@ export default function Index() {
   const handleDelete = async (id: string) => {
     const newList = items.filter((item) => item.id !== id);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
     setItems(newList);
 
     await storeData(STORAGE_KEY, newList);
@@ -63,6 +67,12 @@ export default function Index() {
     const shopping = items.map((item) => {
       const now = Date.now();
       if (item.id === id) {
+        if (item.completedAtTimestamp) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        } else {
+          !Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+
         return {
           ...item,
           lastUpdatedTimestamp: now,
