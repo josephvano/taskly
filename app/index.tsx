@@ -3,13 +3,8 @@ import { useState } from "react";
 import { StyleSheet, TextInput, View, FlatList } from "react-native";
 import { EmptyList } from "../components/EmptyList";
 import { ShoppingListItem } from "../components/ShoppingListItem";
+import { Item, orderShoppingList } from "../lib";
 import { theme } from "../theme";
-
-type Item = {
-  id: string;
-  name: string;
-  completedAt?: number;
-};
 
 export default function Index() {
   const [value, setValue] = useState<string>("");
@@ -23,6 +18,7 @@ export default function Index() {
       {
         id: new Date().toISOString(),
         name: value,
+        lastUpdatedTimestamp: Date.now(),
       },
       ...items,
     ]);
@@ -36,10 +32,12 @@ export default function Index() {
 
   const handleToggle = (id: string) => {
     const shopping = items.map((item) => {
+      const now = Date.now();
       if (item.id === id) {
         return {
           ...item,
-          completedAt: item.completedAt ? undefined : Date.now(),
+          lastUpdatedTimestamp: now,
+          completedAtTimestamp: item.completedAtTimestamp ? undefined : now,
         };
       } else {
         return item;
@@ -51,7 +49,7 @@ export default function Index() {
 
   return (
     <FlatList
-      data={items}
+      data={orderShoppingList(items)}
       style={styles.container}
       contentContainerStyle={styles.scrollContainer}
       stickyHeaderIndices={[0]}
@@ -70,7 +68,7 @@ export default function Index() {
       renderItem={({ item }) => (
         <ShoppingListItem
           name={item.name}
-          isCompleted={Boolean(item.completedAt)}
+          isCompleted={Boolean(item.completedAtTimestamp)}
           onDelete={() => handleDelete(item.id)}
           onToggle={() => handleToggle(item.id)}
         />
