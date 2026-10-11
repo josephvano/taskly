@@ -8,7 +8,7 @@ import { theme } from "../theme";
 type Item = {
   id: string;
   name: string;
-  isCompleted?: boolean;
+  completedAt?: number;
 };
 
 export default function Index() {
@@ -23,12 +23,30 @@ export default function Index() {
       {
         id: new Date().toISOString(),
         name: value,
-        isCompleted: false,
       },
       ...items,
     ]);
 
     setValue("");
+  };
+
+  const handleDelete = (id: string) => {
+    setItems(items.filter((item) => item.id !== id));
+  };
+
+  const handleToggle = (id: string) => {
+    const shopping = items.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          completedAt: item.completedAt ? undefined : Date.now(),
+        };
+      } else {
+        return item;
+      }
+    });
+
+    setItems(shopping);
   };
 
   return (
@@ -50,7 +68,12 @@ export default function Index() {
         </View>
       }
       renderItem={({ item }) => (
-        <ShoppingListItem name={item.name} isCompleted={item.isCompleted} />
+        <ShoppingListItem
+          name={item.name}
+          isCompleted={Boolean(item.completedAt)}
+          onDelete={() => handleDelete(item.id)}
+          onToggle={() => handleToggle(item.id)}
+        />
       )}
       ListEmptyComponent={EmptyList}
     >

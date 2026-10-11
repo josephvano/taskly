@@ -1,19 +1,45 @@
 import { AntDesign, Entypo } from "@expo/vector-icons";
-import { Alert, Text, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Pressable,
+} from "react-native";
 import { theme } from "../theme";
 
 type Props = {
   name: string;
+  onDelete?: () => void;
+  onToggle?: () => void;
+  completedTimestamp?: number;
   isCompleted?: boolean;
 };
 
-export function ShoppingListItem({ name, isCompleted = false }: Props) {
+export function ShoppingListItem({
+  name,
+  isCompleted = false,
+  onToggle,
+  onDelete,
+}: Props) {
   const onCancel = () => {
     console.log("Cancel");
   };
 
   const onYes = () => {
     console.log("Yes");
+
+    if (onDelete) {
+      onDelete();
+    }
+  };
+
+  const handleToggle = () => {
+    console.log(`toggling ${name}`);
+    if (onToggle) {
+      onToggle();
+    }
   };
 
   const handleAlert = () => {
@@ -36,14 +62,14 @@ export function ShoppingListItem({ name, isCompleted = false }: Props) {
   };
   return (
     <View style={[styles.container, styles.row]}>
-      <View style={[styles.row]}>
+      <Pressable style={[styles.row, styles.item]} onPress={handleToggle}>
         <Entypo name={isCompleted ? "check" : "circle"} style={[styles.icon]} />
         <Text
           style={[styles.text, isCompleted ? stylesCompleted.text : undefined]}
         >
           {name}
         </Text>
-      </View>
+      </Pressable>
       <TouchableOpacity hitSlop={20} onPress={handleAlert}>
         <AntDesign
           name="close-circle"
@@ -69,7 +95,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     paddingHorizontal: 16,
-    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: theme.colorCerulean,
     justifyContent: "space-between",
@@ -77,6 +102,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  item: {
+    paddingVertical: 16,
+    flex: 1,
   },
   button: {
     padding: 8,
