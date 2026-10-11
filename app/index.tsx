@@ -70,7 +70,7 @@ export default function Index() {
         if (item.completedAtTimestamp) {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         } else {
-          !Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         }
 
         return {
