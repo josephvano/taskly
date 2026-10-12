@@ -1,7 +1,10 @@
 import { Duration, isBefore, intervalToDuration } from "date-fns";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { TimeSegment } from "../../components/TimeSegment";
 import { registerPushNotifications } from "../../lib";
+import { OverdueText } from "./OverdueText";
+import { TimeDueText } from "./TimeDueText";
 
 const timestampDue = Date.now() + 10000; // 10 seconds from now
 
@@ -61,18 +64,38 @@ export default function CounterScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerTimer}>
-        <Text style={styles.timerText}>{timer}</Text>
-        <Text
-          style={[
-            styles.timerText,
-            status.isOverdue ? { color: "red" } : { color: "green" },
-          ]}
-        >
-          {status.isOverdue ? "-" : ""}
-          {status.distance.seconds}
-        </Text>
+    <View
+      style={[
+        styles.container,
+        status.isOverdue
+          ? { backgroundColor: "red" }
+          : { backgroundColor: "white" },
+      ]}
+    >
+      <View style={styles.row}>
+        {status.isOverdue ? <OverdueText /> : <TimeDueText />}
+      </View>
+      <View style={styles.row}>
+        <TimeSegment
+          unit="Days"
+          number={status.distance?.days ?? 0}
+          textStyle={status.isOverdue ? styles.whiteText : undefined}
+        />
+        <TimeSegment
+          unit="Hours"
+          number={status.distance?.hours ?? 0}
+          textStyle={status.isOverdue ? styles.whiteText : undefined}
+        />
+        <TimeSegment
+          unit="Minutes"
+          number={status.distance?.minutes ?? 0}
+          textStyle={status.isOverdue ? styles.whiteText : undefined}
+        />
+        <TimeSegment
+          unit="Seconds"
+          number={status.distance?.seconds ?? 0}
+          textStyle={status.isOverdue ? styles.whiteText : undefined}
+        />
       </View>
       <TouchableOpacity
         onPress={scheduleNotification}
@@ -92,11 +115,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
-  containerTimer: {
-    marginBottom: 20,
+  row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 24,
+    marginVertical: 16,
+  },
+  whiteText: {
+    color: "#fff",
   },
   timerText: {
     fontSize: 48,
